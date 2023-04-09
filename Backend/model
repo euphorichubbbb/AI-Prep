@@ -1,0 +1,87 @@
+import React, { useState } from 'react';
+import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
+import * as tf from '@tensorflow/tfjs';
+import nltk from 'nltk';
+nltk.download('punkt');
+nltk.download('averaged_perceptron_tagger');
+nltk.download('vader_lexicon');
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
+function App() {
+  const [studyData, setStudyData] = useState({
+    testType: '',
+    testDate: '',
+    testScore: '',
+    studyHours: '',
+    studyStartDate: '',
+    studyEndDate: '',
+    studyStrategy: '',
+    motivationLevel: '',
+  });
+  const [recommendations, setRecommendations] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setStudyData({
+      ...studyData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      // Use TensorFlow.js to create a model that analyzes the user's study data
+      const model = tf.sequential();
+      model.add(tf.layers.dense({inputShape: [5], units: 10, activation: 'relu'}));
+      model.add(tf.layers.dense({units: 10, activation: 'relu'}));
+      model.add(tf.layers.dense({units: 1, activation: 'sigmoid'}));
+      model.compile({optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy']});
+
+      const xs = tf.tensor2d([[studyData.testScore, studyData.studyHours, studyData.studyStartDate, studyData.studyEndDate, studyData.motivationLevel]]);
+      const ys = model.predict(xs);
+      const recommendationScore = ys.dataSync()[0];
+
+      // Use NLTK to analyze the user's study strategy
+      const sid = new SentimentIntensityAnalyzer();
+      const strategySentiment = sid.polarity_scores(studyData.studyStrategy);
+      const recommendationSentiment = strategySentiment['compound'];
+
+      // Combine the recommendation score and sentiment into a single recommendation
+      const combinedRecommendation = (recommendationScore + recommendationSentiment) / 2;
+      setRecommendations(combinedRecommendation);
+      setShowAlert(true);
+    } catch (error) {
+      console.error(error);
+      setShowAlert(true);
+    }
+  };
+
+  return (
+    <Container className="mt-5">
+      <Row className="justify-content-center">
+        <Col md={8}>
+          <h1>SAT/ACT Study Buddy</h1>
+          <p>Use machine learning to optimize your study plan and stay motivated</p>
+          {showAlert && recommendations !== null && (
+            <Alert variant="success">
+              Your personalized study recommendation is {recommendations}.
+            </Alert>
+          )}
+          {showAlert && recommendations === null && (
+            <Alert variant="danger">
+              Failed to fetch recommendations from the API. Please try again.
+            </Alert>
+          )}
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="testType">
+              <Form.Label>Test Type</Form.Label>
+              <Form.Control name="testType" type="text" placeholder="SAT/ACT" value={studyData.testType} onChange={handleInputChange} />
+            </Form.Group>
+
+            <Form.Group controlId="testDate">
+              <Form.Label>Test Date</Form.Label>
+              <Form.Control name="testDate" type="date" value={studyData.testDate} onChange={handleInputChange} />
+           
