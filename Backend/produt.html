@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Productivity Tools</title>
+      <style>
+         body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            background: linear-gradient(to right, #FF5F6D, #FFC371);
+         }
+         .box {
+            width: 300px;
+            padding: 40px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #191919;
+            text-align: center;
+         }
+         .box h1 {
+            color: white;
+            text-transform: uppercase;
+            font-weight: 500;
+         }
+         .box input[type = "text"], .box input[type = "password"] {
+            border: 0;
+            background: none;
+            display: block;
+            margin: 20px auto;
+            text-align: center;
+            border: 2px solid #3498db;
+            padding: 14px 10px;
+            width: 200px;
+            outline: none;
+            color: white;
+            border-radius: 24px;
+            transition: 0.25s;
+         }
+         .box input[type = "text"]:focus, .box input[type = "password"]:focus {
+            width: 280px;
+            border-color: #2ecc71;
+         }
+         .box input[type = "submit"] {
+            border: 0;
+            background: none;
+            display: block;
+            margin: 20px auto;
+            text-align: center;
+            border: 2px solid #2ecc71;
+            padding: 14px 40px;
+            outline: none;
+            color: white;
+            border-radius: 24px;
+            transition: 0.25s;
+            cursor: pointer;
+         }
+         .box input[type = "submit"]:hover {
+            background: #2ecc71;
+         }
+      </style>
+   </head>
+   <body>
+      <div class="box">
+         <h1>Productivity Tools</h1>
+         <p>Get AI-powered productivity tools to help you optimize your study time and stay on track with your goals.</p>
+         <form>
+            <label for="focus">What do you need to focus on?</label>
+            <br>
+            <input type="text" id="focus" name="focus" placeholder="e.g. Math, History, Writing">
+            <br><br>
+            <label for="time">How much time do you have?</label>
+            <br>
+            <select id="time" name="time">
+               <option value="30">30 minutes</option>
+               <option value="60">1 hour</option>
+               <option value="90">1 hour 30 minutes</option>
+               <option value="120">2 hours</option>
+            </select>
+            <br><br>
+            <input type="submit" value="Get Productivity Tools">
+         </form>
+      </div>
+   </body>
+</html>
